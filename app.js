@@ -75,12 +75,17 @@ app.get("/gita.svg", async (req, res) => {
 
 // GET all chapters urls
 app.get("/gita/chapters", async (req, res) => {
-  await bgchap.find({}, { _id: 0 }, (err, data) => {
-    if (!data) {
-      res.status(500).json({ error: "Internal Server Error" });
+  await bgchap.find(
+    {},
+    { _id: 0 },
+    { sort: { chapter_number: 1 } },
+    (err, data) => {
+      if (!data) {
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+      res.json(data);
     }
-    res.json(data);
-  });
+  );
 });
 
 // GET particular chapters urls

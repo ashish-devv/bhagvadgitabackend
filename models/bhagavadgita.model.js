@@ -32,7 +32,7 @@ const bgslokSchema = new mongoose.Schema({
 
 // bhagavad gita chapter Schema
 const bgchapSchema = new mongoose.Schema({
-  chapter_number: String,
+  chapter_number: Number,
   verses_count: Number,
   name: String,
   translation: String,
