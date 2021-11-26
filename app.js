@@ -25,10 +25,10 @@ app.get("/gita", (req, res) => {
   //console.log(gitaslokid());
   bgslok.findOne({ _id: gitaslokid() }, (err, data) => {
     if (err) {
-      res.send(err);
+      return res.send(err);
     } else {
       //console.log(data);
-      res.send(data);
+      return res.send(data);
     }
   });
 });
@@ -40,12 +40,16 @@ app.get("/gita/:ch/:sl", async (req, res) => {
   if (!isNaN(chapter) && !isNaN(slok)) {
     await bgslok.findById(`BG${chapter}.${slok}`, (err, data) => {
       if (!data) {
-        res.status(400).json({ error: "This Chapter or Slok does not exist" });
+        return res
+          .status(400)
+          .json({ error: "This Chapter or Slok does not exist" });
       }
-      res.json(data);
+      return res.json(data);
     });
   } else {
-    res.status(400).json({ error: "Invalid request, Plese type valid input" });
+    return res
+      .status(400)
+      .json({ error: "Invalid request, Plese type valid input" });
   }
 });
 
@@ -60,16 +64,20 @@ app.get("/gita.svg", async (req, res) => {
   ) {
     await bgslok.findById(gitaslokid(chapter, slok), (err, data) => {
       if (!data) {
-        res.status(400).json({ error: "Chapter or Slok does not exist" });
+        return res
+          .status(400)
+          .json({ error: "Chapter or Slok does not exist" });
       }
       res.set({
         "Content-Type": "image/svg+xml",
         "Cache-Control": "public, max-age=600",
       });
-      res.send(renderSVG(data));
+      return res.send(renderSVG(data));
     });
   } else {
-    res.status(400).json({ error: "Invalid request, Plese type valid input" });
+    return res
+      .status(400)
+      .json({ error: "Invalid request, Plese type valid input" });
   }
 });
 
@@ -81,9 +89,9 @@ app.get("/gita/chapters", async (req, res) => {
     { sort: { chapter_number: 1 } },
     (err, data) => {
       if (!data) {
-        res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
       }
-      res.json(data);
+      return res.json(data);
     }
   );
 });
@@ -117,10 +125,10 @@ app.get("/gita/:ch", async (req, res) => {
 app.get("/createall", (req, res) => {
   //bgchap.create(bgchap.data, (err, data) => {});
   bgslok.create(bgslok.data, (err, data) => {});
-  res.send("done");
+  return res.send("done");
 });
 
-const PORT = process.env.PORT || 80;
-const server = app.listen(PORT, () => {
+// const PORT = process.env.PORT || 80;
+const server = app.listen(process.env.PORT || 80, () => {
   console.log("Server Started on port %s...", server.address().port);
 });
